@@ -648,18 +648,6 @@ define Device/dlink_dir-xx60-a1
 	check-size
 endef
 
-define Device/dlink_dir-xx60-r3
-  $(Device/nand)
-  IMAGE_SIZE := 40960k
-  DEVICE_VENDOR := D-Link
-  DEVICE_PACKAGES := kmod-mt7615-firmware kmod-usb3 \
-        kmod-usb-ledtrig-usbport -uboot-envtools
-  KERNEL := $$(KERNEL)
-  IMAGES += factory.bin
-  IMAGE/factory.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | \
-        check-size
-endef
-
 define Device/dlink_dir-1935-a1
   $(Device/dlink_dir-8xx-a1)
   DEVICE_MODEL := DIR-1935
@@ -712,9 +700,17 @@ endef
 TARGET_DEVICES += dlink_dir-853-a3
 
 define Device/dlink_dir-853-r3
-  $(Device/dlink_dir-xx60-r3)
+  $(Device/nand)
   DEVICE_MODEL := DIR-853
   DEVICE_VARIANT := R3
+  IMAGE_SIZE := 40960k
+  DEVICE_VENDOR := D-Link
+  DEVICE_PACKAGES := kmod-mt7615-firmware kmod-usb3 \
+        kmod-usb-ledtrig-usbport -uboot-envtools
+  KERNEL := $$(KERNEL)
+  IMAGES += factory.bin
+  IMAGE/factory.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | \
+        check-size
 endef
 TARGET_DEVICES += dlink_dir-853-r3
 
