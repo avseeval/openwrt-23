@@ -69,6 +69,7 @@ platform_do_upgrade() {
 	dlink,dir-2660-a1|\
 	dlink,dir-3060-a1|\
 	dlink,dir-853-a3|\
+	dlink,dir-853-r3|\
 	etisalat,s3|\
 	h3c,tx1800-plus|\
 	h3c,tx1801-plus|\

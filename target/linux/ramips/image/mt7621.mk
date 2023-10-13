@@ -2831,6 +2831,30 @@ define Device/zbtlink_zbt-wg3526-32m
 endef
 TARGET_DEVICES += zbtlink_zbt-wg3526-32m
 
+define Device/zbtlink_zbt-z100a
+  $(Device/dsa-migration)
+  DEVICE_VENDOR := ZBTLINK
+  DEVICE_MODEL := ZBT Z100A
+  DEVICE_DTS_CONFIG := config@1
+  DEVICE_PACKAGES += kmod-mt7915e kmod-usb3
+  KERNEL := kernel-bin | lzma | fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+  IMAGE_SIZE := 15808k
+  SUPPORTED_DEVICES += mt7621-zbtlink_zbt-z100a
+endef
+TARGET_DEVICES += zbtlink_zbt-z100a
+
+define Device/zbtlink_zbt-z100a-32m
+  $(Device/dsa-migration)
+  DEVICE_VENDOR := ZBTLINK
+  DEVICE_MODEL := ZBT Z100A-32M
+  DEVICE_DTS_CONFIG := config@1
+  DEVICE_PACKAGES += kmod-mt7915e kmod-usb3
+  KERNEL := kernel-bin | lzma | fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+  IMAGE_SIZE := 31872k
+  SUPPORTED_DEVICES += mt7621-zbtlink_zbt-z100a-32m
+endef
+TARGET_DEVICES +=zbtlink_zbt-z100a-32m
+
 define Device/zio_freezio
   $(Device/dsa-migration)
   IMAGE_SIZE := 16064k
