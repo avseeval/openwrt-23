@@ -2721,6 +2721,43 @@ define Device/zbtlink_zbt-we1326
 endef
 TARGET_DEVICES += zbtlink_zbt-we1326
 
+define Device/zbtlink_zbt-we1326-32m
+  $(Device/dsa-migration)
+  $(Device/uimage-lzma-loader)
+  IMAGE_SIZE := 32448k
+  DEVICE_VENDOR := Zbtlink
+  DEVICE_MODEL := ZBT-WE1326
+  DEVICE_VARIANT := 32M
+  DEVICE_PACKAGES := kmod-mt7603 kmod-mt76x2 kmod-usb3 kmod-sdhci-mt7620 \
+	-uboot-envtools
+  SUPPORTED_DEVICES += zbt-we1326
+endef
+TARGET_DEVICES += zbtlink_zbt-we1326-32m
+
+define Device/zbtlink_zbt-wg108
+  $(Device/dsa-migration)
+  $(Device/uimage-lzma-loader)
+  IMAGE_SIZE := 32448k
+  DEVICE_VENDOR := Zbtlink
+  DEVICE_MODEL := ZBT-WG108
+  DEVICE_PACKAGES := kmod-mt7603 kmod-mt76x2 kmod-usb2 kmod-sdhci-mt7620 \
+        kmod-usb3 kmod-usb-ledtrig-usbport -uboot-envtools
+  SUPPORTED_DEVICES += zbt-wg108
+endef
+TARGET_DEVICES += zbtlink_zbt-wg108
+
+define Device/zbtlink_zbt-z2101ax-32m
+  $(Device/dsa-migration)
+  $(Device/uimage-lzma-loader)
+  IMAGE_SIZE := 32448k
+  DEVICE_VENDOR := Zbtlink
+  DEVICE_MODEL := ZBT-Z2101AX
+  DEVICE_VARIANT := 32M
+  DEVICE_PACKAGES := kmod-sdhci-mt7620 kmod-mt7915e \
+  kmod-usb3 kmod-usb-ledtrig-usbport
+endef
+TARGET_DEVICES += zbtlink_zbt-z2101ax-32m
+
 define Device/zbtlink_zbt-we3526
   $(Device/dsa-migration)
   $(Device/uimage-lzma-loader)

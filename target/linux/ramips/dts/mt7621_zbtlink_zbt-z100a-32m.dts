@@ -1,0 +1,183 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include "mt7621.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+/ {
+	compatible = "zbtlink,zbt-z100a-32m", "mediatek,mt7621-soc";
+	model = "ZBTLINK Z100A-32M";
+
+	aliases {
+		label-mac-device = &gmac0;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,115200";
+		bootargs-override = "console=ttyS0,115200";
+	};
+
+	
+ keys {
+                compatible = "gpio-keys";
+
+                reset {
+                        label = "reset";
+                        gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
+                        linux,code = <KEY_RESTART>;
+                };
+
+                wps {
+                        label = "wps";
+                        gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
+                        linux,code = <KEY_WPS_BUTTON>;
+                };
+        };
+
+        leds {
+                compatible = "gpio-leds";
+
+                blue {
+                        label = "blue";
+                        gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
+                };
+                red {
+                        label = "red";
+                        gpios = <&gpio 4 GPIO_ACTIVE_LOW>;
+                };
+                green {
+                        label = "green";
+                        gpios = <&gpio 3 GPIO_ACTIVE_LOW>;
+                };
+                
+                
+             
+             
+             
+             
+                
+        };
+
+	
+};
+
+&pcie {
+	status = "okay";
+};
+
+
+
+&pcie1 {
+	wifi@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
+		mediatek,mtd-eeprom = <&factory 0x0000>;
+		mtd-mac-address = <&factory 0x4>;
+		nvmem-cells = <&macaddr_factory_4>;
+		nvmem-cell-names = "mac-address";
+				
+	};
+};
+
+
+&gmac0 {
+	nvmem-cells = <&macaddr_factory_4>;
+	nvmem-cell-names = "mac-address";
+	mac-address-increment = <(2)>;
+};
+
+
+
+
+&switch0 {
+	ports {
+		
+		port@1 {
+			status = "okay";
+			label = "lan1";
+		};
+
+		port@2 {
+			status = "okay";
+			label = "lan2";
+		};
+
+		port@3 {
+			status = "okay";
+			label = "lan3";
+		};
+
+		wan_port: port@4 {
+			status = "okay";
+			label = "wan";
+			nvmem-cells = <&macaddr_factory_4>;
+			nvmem-cell-names = "mac-address";
+			mac-address-increment = <(3)>;
+		};
+
+	};
+};
+
+&state_default {
+	gpio {
+		groups = "uart3";
+		function = "gpio";
+	};
+};
+
+&spi0 {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <50000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x0 0x30000>;
+				read-only;
+			};
+
+			partition@30000 {
+				label = "u-boot-env";
+				reg = <0x30000 0x10000>;
+				read-only;
+			};
+
+			partition@40000 {
+				label = "product";
+				reg = <0x40000 0x10000>;
+				read-only;
+			};
+
+			factory: partition@50000 {
+				label = "factory";
+				reg = <0x50000 0x40000>;
+				read-only;
+			};
+
+			partition@90000 {
+				compatible = "denx,fit";
+				label = "firmware";
+				reg = <0x90000 0x1f70000>;
+			};
+		};
+	};
+};
+
+&factory {
+	compatible = "nvmem-cells";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	macaddr_factory_4: macaddr@4 {
+		reg = <0x4 0x6>;
+	};
+};

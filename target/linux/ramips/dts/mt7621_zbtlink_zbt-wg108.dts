@@ -4,8 +4,16 @@
 #include <dt-bindings/input/input.h>
 
 / {
-	compatible = "zbtlink,zbt-we3526", "mediatek,mt7621-soc";
-	model = "Zbtlink ZBT-WE3526";
+	compatible = "zbtlink,zbt-wg108", "mediatek,mt7621-soc";
+	model = "Zbtlink ZBT-WG108";
+
+	aliases {
+		led-boot = &led_status;
+		led-failsafe = &led_status;
+		led-running = &led_status;
+		led-upgrade = &led_status;
+		label-mac-device = &wifi0;
+	};
 
 	chosen {
 		bootargs = "console=ttyS0,115200";
@@ -18,6 +26,15 @@
 			label = "reset";
 			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_status: status {
+			label = "green:status";
+			gpios = <&gpio 24 GPIO_ACTIVE_LOW>;
 		};
 	};
 };
@@ -33,7 +50,8 @@
 &spi0 {
 	status = "okay";
 
-	flash@0 {
+	flash0: flash@0 {
+		broken-flash-reset;
 		compatible = "jedec,spi-nor";
 		reg = <0>;
 		spi-max-frequency = <10000000>;
@@ -56,34 +74,15 @@
 			};
 
 			factory: partition@40000 {
-				compatible = "nvmem-cells";
 				label = "factory";
 				reg = <0x40000 0x10000>;
-				#address-cells = <1>;
-				#size-cells = <1>;
 				read-only;
-
-				eeprom_factory_0: eeprom@0 {
-					reg = <0x0 0x400>;
-				};
-
-				eeprom_factory_8000: eeprom@8000 {
-					reg = <0x8000 0x200>;
-				};
-
-				macaddr_factory_e000: macaddr@e000 {
-					reg = <0xe000 0x6>;
-				};
-
-				macaddr_factory_e006: macaddr@e006 {
-					reg = <0xe006 0x6>;
-				};
 			};
 
 			firmware: partition@50000 {
 				compatible = "denx,uimage";
 				label = "firmware";
-				reg = <0x50000 0xfb0000>;
+				reg = <0x50000 0x1fb0000>;
 			};
 		};
 	};
@@ -94,12 +93,18 @@
 };
 
 &pcie0 {
-	wifi@0,0 {
-		compatible = "pci14c3,7662";
+	wifi0: mt76@0,0 {
 		reg = <0x0000 0 0 0 0>;
-		nvmem-cells = <&eeprom_factory_8000>;
-		nvmem-cell-names = "eeprom";
+		mediatek,mtd-eeprom = <&factory 0x8000>;
 		ieee80211-freq-limit = <5000000 6000000>;
+	};
+};
+
+&pcie1 {
+	wifi1: mt76@0,0 {
+		reg = <0x0000 0 0 0 0>;
+		mediatek,mtd-eeprom = <&factory 0x0000>;
+		ieee80211-freq-limit = <2400000 2500000>;
 
 		led {
 			led-sources = <2>;
@@ -107,33 +112,13 @@
 	};
 };
 
-&pcie1 {
-	wifi@0,0 {
-		compatible = "pci14c3,7603";
-		reg = <0x0000 0 0 0 0>;
-		nvmem-cells = <&eeprom_factory_0>;
-		nvmem-cell-names = "eeprom";
-	};
+&ethernet {
+	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
 };
 
 &gmac0 {
 	nvmem-cells = <&macaddr_factory_e000>;
 	nvmem-cell-names = "mac-address";
-};
-
-&gmac1 {
-	status = "okay";
-	label = "wan";
-	phy-handle = <&ethphy4>;
-
-	nvmem-cells = <&macaddr_factory_e006>;
-	nvmem-cell-names = "mac-address";
-};
-
-&mdio {
-	ethphy4: ethernet-phy@4 {
-		reg = <4>;
-	};
 };
 
 &switch0 {
@@ -157,12 +142,30 @@
 			status = "okay";
 			label = "lan4";
 		};
+
+		port@4 {
+			status = "okay";
+			label = "wan";
+			nvmem-cells = <&macaddr_factory_e000>;
+			nvmem-cell-names = "mac-address";
+			mac-address-increment = <1>;
+		};
 	};
 };
 
 &state_default {
 	gpio {
-		groups = "wdt";
+		groups = "wdt", "rgmii2";
 		function = "gpio";
+	};
+};
+
+&factory {
+	compatible = "nvmem-cells";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	macaddr_factory_e000: macaddr@e000 {
+		reg = <0xe000 0x6>;
 	};
 };

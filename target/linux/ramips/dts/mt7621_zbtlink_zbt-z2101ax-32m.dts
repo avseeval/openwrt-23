@@ -1,0 +1,10 @@
+#include "mt7621_zbtlink_zbt-z2101ax-32m.dtsi"
+
+/ {
+	compatible = "zbtlink,zbt-z2101ax-32m", "mediatek,mt7621-rfb-nor", "mediatek,mt7621-soc";
+	model = "MediaTek MT7621 RFB (802.11ax,SNOR) Z2101AX";
+};
+
+&firmware {
+	reg = <0x90000 0x1f70000>;
+};
