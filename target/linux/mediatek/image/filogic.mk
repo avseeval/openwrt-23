@@ -496,6 +496,24 @@ endif
 endef
 TARGET_DEVICES += xiaomi_mi-router-wr30u-ubootmod
 
+define Device/zbt-z8105ax
+  DEVICE_VENDOR := ZBTLINK
+  DEVICE_MODEL := Z8105AX
+  DEVICE_DTS := mt7981b-zbt-z8105ax
+  DEVICE_DTS_DIR := ../dts
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  IMAGE_SIZE := 32768k
+  IMAGES := sysupgrade.bin
+  KERNEL := kernel-bin | lzma | \
+        fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+  KERNEL_INITRAMFS := kernel-bin | lzma | \
+        fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
+  IMAGE/sysupgrade.bin := append-kernel | pad-to 128k | append-rootfs | pad-rootfs | check-size | append-metadata
+  DEVICE_PACKAGES := kmod-mt7981-firmware mt7981-wo-firmware kmod-usb3
+endef
+TARGET_DEVICES += zbt-z8105ax
+
 define Device/xiaomi_redmi-router-ax6000-stock
   DEVICE_VENDOR := Xiaomi
   DEVICE_MODEL := Redmi Router AX6000 (stock layout)
