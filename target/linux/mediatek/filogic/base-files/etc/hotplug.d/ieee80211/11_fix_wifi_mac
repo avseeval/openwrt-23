@@ -63,6 +63,11 @@ case "$board" in
 	tplink,tl-xdr6088)
 		[ "$PHYNBR" = "0" ] && get_mac_label > /sys${DEVPATH}/macaddress
 		;;
+	zbtlink,zbt-z8103ax)
+		addr=$(mtd_get_mac_binary "Factory" 0x4)
+		[ "$PHYNBR" = "0" ] && macaddr_add $addr 2 > /sys${DEVPATH}/macaddress
+		[ "$PHYNBR" = "1" ] && macaddr_add $addr 3 > /sys${DEVPATH}/macaddress
+		;;
 	zyxel,ex5601-t0)
 		addr=$(mtd_get_mac_binary "Factory" 0x4)
 		[ "$PHYNBR" = "1" ] && macaddr_add $addr 1 > /sys${DEVPATH}/macaddress

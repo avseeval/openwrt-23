@@ -15,13 +15,13 @@ case "$FIRMWARE" in
 	esac
 	;;
 "mediatek/mt7981_eeprom_mt7976_dbdc.bin")
-	case "$board" in
-	mediatek,mt7981-spim-snand-rfb-z8105ax)
-		echo "11-mt76-caldata: extracting $FIRMWARE on $board" > /dev/kmsg
-		caldata_extract_mmc "factory" 0x0 0x1000
-		;;
-	esac
-	;;
+        case "$board" in
+        mediatek,mt7981-spim-snand-rfb-z8105ax)
+                echo "11-mt76-caldata: extracting $FIRMWARE on $board" > /dev/kmsg
+                caldata_extract "Factory" 0x0 0x1000
+                ;;
+        esac
+        ;;
 "mediatek/mt7986_eeprom_mt7976.bin")
 	case "$board" in
 	acer,predator-w6)
